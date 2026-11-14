@@ -65,7 +65,7 @@ export const configureSocket = (io) => {
         socket.data.roomRole = expectedRole;
         await socket.join(roomCode);
 
-        callback({ ok: true, role: expectedRole });
+        callback({ ok: true, role: expectedRole, peerPresent: existingSockets.length > 0 });
         socket.to(roomCode).emit("peer-joined", { role: expectedRole });
       } catch (error) {
         console.error("Join interview room error:", error);
