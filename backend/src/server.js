@@ -1,6 +1,10 @@
 import "dotenv/config";
 import express from "express";
+import { createServer } from "node:http";
+import { Server } from "socket.io";
 import executeRoutes from "../routes/executeRoutes.js";
+import interviewRoutes from "../routes/interviewRoutes.js";
+import { configureSocket } from "./socket.js";
 import { clerkMiddleware } from "@clerk/express";
 import { connectDB } from "./lib/db.js";
 import problemRoutes from "../routes/problemRoutes.js";
@@ -20,6 +24,7 @@ app.use(express.json());
 app.use(clerkMiddleware());
 app.use("/api/problems", problemRoutes);
 app.use("/api/execute", executeRoutes);
+app.use("/api/interviews", interviewRoutes);
 app.get("/api/test-problem-route", (req, res) => {
   res.json({ message: "Problem routes are reaching this server" });
 });
@@ -39,9 +44,18 @@ app.get("/api/me", protectRoute, (req, res) => {
   });
 });
 
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
+configureSocket(io);
+
 const startServer = async () => {
   await connectDB();
-  app.listen(3000, () => {
+  httpServer.listen(3000, () => {
     console.log("Server is running on port: 3000");
   });
 };
