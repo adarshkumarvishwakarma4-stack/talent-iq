@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Home from "./pages/Home";
 import Problems from "./pages/Problems";
 import Admin from "./pages/Admin";
+import VideoInterview from "./pages/VideoInterview";
 
 function App() {
   const location = useLocation();
@@ -99,6 +100,12 @@ function App() {
           Problems
         </Link>
 
+        {isSignedIn && (
+          <Link to="/interview" className={navLinkClass("/interview")}>
+            Interview
+          </Link>
+        )}
+
         {isSignedIn && userRole === "admin" && (
           <Link to="/admin" className={navLinkClass("/admin")}>
             Admin
@@ -141,6 +148,7 @@ function App() {
 
           {/* Individual problem details */}
           <Route path="/problems/:id" element={<Problems />} />
+          <Route path="/interview" element={<VideoInterview />} />
 
           <Route
             path="/admin"
