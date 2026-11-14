@@ -1,15 +1,44 @@
+
 import mongoose from "mongoose";
+
+const testCaseSchema = new mongoose.Schema(
+  {
+    input: {
+      type: String,
+      default: "",
+    },
+    expectedOutput: {
+      type: String,
+      required: true,
+    },
+    isHidden: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { _id: true }
+);
 
 const problemSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, unique: true },
+    title: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     difficulty: {
       type: String,
       enum: ["Easy", "Medium", "Hard"],
       required: true,
     },
-    category: { type: String, default: "" },
-    description: { type: String, required: true },
+    category: {
+      type: String,
+      default: "",
+    },
+    description: {
+      type: String,
+      required: true,
+    },
     examples: [
       {
         input: String,
@@ -18,8 +47,23 @@ const problemSchema = new mongoose.Schema(
       },
     ],
     constraints: [String],
-    starterCode: { type: String, default: "" },
-    expectedOutput: { type: String, required: true },
+    starterCode: {
+      type: String,
+      default: "",
+    },
+
+    // Keep this for compatibility with existing problems
+    expectedOutput: {
+      type: String,
+      default: "",
+    },
+
+    // New multiple test-case support
+    testCases: {
+      type: [testCaseSchema],
+      default: [],
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

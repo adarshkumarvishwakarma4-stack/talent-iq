@@ -1,20 +1,28 @@
+
 import { requireAuth, clerkClient } from "@clerk/express";
 import User from "../models/User.js";
+
 
 export const protectRoute = [
   requireAuth(),
   async (req, res, next) => {
     try {
       const clerkId = req.auth().userId;
-      if (!clerkId) return res.status(401).json({ message: "Unauthorized" });
+
+      if (!clerkId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
 
       let user = await User.findOne({ clerkId });
 
       if (!user) {
         const clerkUser = await clerkClient.users.getUser(clerkId);
+
         user = await User.create({
           clerkId,
-          name: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || "User",
+          name:
+            `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() ||
+            "User",
           email: clerkUser.emailAddresses[0]?.emailAddress,
           profileImage: clerkUser.imageUrl,
         });
@@ -28,3 +36,13 @@ export const protectRoute = [
     }
   },
 ];
+
+export const requireAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({
+      message: "Forbidden: Admin access required",
+    });
+  }
+
+  next();
+};
