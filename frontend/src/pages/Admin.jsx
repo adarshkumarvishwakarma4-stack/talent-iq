@@ -192,10 +192,6 @@ const handleSubmit = async (e) => {
               </p>
             </div>
 
-            <div className="flex h-11 w-fit items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm text-slate-300 backdrop-blur-xl">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              Workspace active
-            </div>
           </header>
 
           {/* Dashboard shortcuts */}
