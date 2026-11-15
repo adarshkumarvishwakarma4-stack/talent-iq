@@ -4,6 +4,7 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import executeRoutes from "../routes/executeRoutes.js";
 import interviewRoutes from "../routes/interviewRoutes.js";
+import assessmentRoutes from "../routes/assessmentRoutes.js";
 import { configureSocket } from "./socket.js";
 import { clerkMiddleware } from "@clerk/express";
 import { connectDB } from "./lib/db.js";
@@ -25,6 +26,7 @@ app.use(clerkMiddleware());
 app.use("/api/problems", problemRoutes);
 app.use("/api/execute", executeRoutes);
 app.use("/api/interviews", interviewRoutes);
+app.use("/api/assessments", assessmentRoutes);
 app.get("/api/test-problem-route", (req, res) => {
   res.json({ message: "Problem routes are reaching this server" });
 });
