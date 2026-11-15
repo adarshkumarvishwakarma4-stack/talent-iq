@@ -14,6 +14,8 @@ import Home from "./pages/Home";
 import Problems from "./pages/Problems";
 import Admin from "./pages/Admin";
 import VideoInterview from "./pages/VideoInterview";
+import Assessment from "./pages/Assessment";
+import AdminAssessments from "./pages/AdminAssessments";
 
 function App() {
   const location = useLocation();
@@ -100,16 +102,21 @@ function App() {
           Problems
         </Link>
 
-        {isSignedIn && (
-          <Link to="/interview" className={navLinkClass("/interview")}>
-            Interview
+        {isSignedIn && userRole !== "admin" && (
+          <Link to="/assessment" className={navLinkClass("/assessment")}>
+            Take Assessment
           </Link>
         )}
 
         {isSignedIn && userRole === "admin" && (
-          <Link to="/admin" className={navLinkClass("/admin")}>
-            Admin
-          </Link>
+          <>
+            <Link to="/admin" className={navLinkClass("/admin")}>
+              Admin
+            </Link>
+            <Link to="/admin/assessments" className={navLinkClass("/admin/assessments")}>
+              Assessments
+            </Link>
+          </>
         )}
 
         <div className="ml-auto flex items-center gap-3">
@@ -149,6 +156,33 @@ function App() {
           {/* Individual problem details */}
           <Route path="/problems/:id" element={<Problems />} />
           <Route path="/interview" element={<VideoInterview />} />
+          <Route
+            path="/assessment"
+            element={
+              !isLoaded || roleLoading ? (
+                <div className="p-8 text-center text-slate-300">Verifying access...</div>
+              ) : !isSignedIn || userRole === "admin" ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Assessment />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/assessments"
+            element={
+              !isLoaded || roleLoading ? (
+                <div className="p-8 text-center text-slate-300">Verifying access...</div>
+              ) : !isSignedIn ? (
+                <Navigate to="/" replace />
+              ) : userRole === "admin" ? (
+                <AdminAssessments />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
 
           <Route
             path="/admin"
