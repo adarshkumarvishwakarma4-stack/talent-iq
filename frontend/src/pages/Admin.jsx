@@ -1,9 +1,11 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 function Admin() {
   const { getToken } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [showForm, setShowForm] = useState(false);
 const [formData, setFormData] = useState({
@@ -102,9 +104,7 @@ const handleSubmit = async (e) => {
   const navItems = [
     { icon: "⌂", label: "Dashboard" },
     { icon: "◇", label: "Problems" },
-    { icon: "♙", label: "Users" },
-    { icon: "▥", label: "Analytics" },
-    { icon: "⚙", label: "Settings" },
+    { icon: "▤", label: "Assessments" },
   ];
 
   return (
@@ -137,7 +137,7 @@ const handleSubmit = async (e) => {
               <button
                 key={item.label}
                 type="button"
-                onClick={() => setActiveTab(item.label)}
+                onClick={() => item.label === "Assessments" ? navigate("/admin/assessments") : setActiveTab(item.label)}
                 className={`flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left text-sm transition ${
                   activeTab === item.label
                     ? "border border-violet-400/15 bg-gradient-to-r from-violet-500/20 to-blue-500/10 text-white shadow-inner shadow-white/[0.02]"
@@ -188,9 +188,7 @@ const handleSubmit = async (e) => {
               <p className="mt-4 text-sm text-slate-400 sm:text-base">
                 {activeTab === "Dashboard" && "Manage your workspace and assessment platform."}
                 {activeTab === "Problems" && "Create and manage coding questions for assessments."}
-                {activeTab === "Users" && "View registered platform users."}
-                {activeTab === "Analytics" && "Review platform activity and assessment performance."}
-                {activeTab === "Settings" && "Configure platform preferences."}
+                {activeTab === "Assessments" && "Create coding assessments and review candidate results."}
               </p>
             </div>
 
@@ -200,51 +198,20 @@ const handleSubmit = async (e) => {
             </div>
           </header>
 
-          {/* Dashboard stats */}
+          {/* Dashboard shortcuts */}
           {activeTab === "Dashboard" && (
-          <section className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            <div className="rounded-2xl border border-white/[0.09] bg-white/[0.045] p-6 shadow-xl shadow-black/10 backdrop-blur-2xl transition hover:border-violet-400/30">
-              <div className="mb-6 flex items-center justify-between">
-                <span className="text-sm text-slate-400">Total Questions</span>
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/15 text-xl text-violet-300">
-                  ◈
-                </span>
-              </div>
-              <h2 className="text-4xl font-semibold tracking-tight">—</h2>
-              <p className="mt-3 text-xs text-slate-500">
-                Your coding question library
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/[0.09] bg-white/[0.045] p-6 shadow-xl shadow-black/10 backdrop-blur-2xl transition hover:border-emerald-400/30">
-              <div className="mb-6 flex items-center justify-between">
-                <span className="text-sm text-slate-400">Assessment Tools</span>
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/15 text-xl text-emerald-300">
-                  ▥
-                </span>
-              </div>
-              <h2 className="text-3xl font-semibold tracking-tight">Ready</h2>
-              <p className="mt-3 text-xs text-slate-500">
-                Create coding challenges
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/[0.09] bg-white/[0.045] p-6 shadow-xl shadow-black/10 backdrop-blur-2xl transition hover:border-blue-400/30 sm:col-span-2 xl:col-span-1">
-              <div className="mb-6 flex items-center justify-between">
-                <span className="text-sm text-slate-400">Platform Status</span>
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/15 text-xl text-blue-300">
-                  ⚡
-                </span>
-              </div>
-              <h2 className="flex items-center gap-3 text-3xl font-semibold">
-                Active
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              </h2>
-              <p className="mt-3 text-xs text-slate-500">
-                Manage your platform
-              </p>
-            </div>
-          </section>
+            <section className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <button type="button" onClick={() => setActiveTab("Problems")} className="rounded-2xl border border-white/[0.09] bg-white/[0.045] p-6 text-left transition hover:border-violet-400/40">
+                <p className="text-sm text-slate-400">Question library</p>
+                <h2 className="mt-3 text-2xl font-semibold">Manage Problems</h2>
+                <p className="mt-2 text-sm text-slate-500">Create coding questions and configure their test cases.</p>
+              </button>
+              <button type="button" onClick={() => navigate("/admin/assessments")} className="rounded-2xl border border-white/[0.09] bg-white/[0.045] p-6 text-left transition hover:border-emerald-400/40">
+                <p className="text-sm text-slate-400">Recruitment workflow</p>
+                <h2 className="mt-3 text-2xl font-semibold">Manage Assessments</h2>
+                <p className="mt-2 text-sm text-slate-500">Assign questions, create access codes and review candidate reports.</p>
+              </button>
+            </section>
           )}
 
           {/* Question management */}
@@ -516,27 +483,6 @@ const handleSubmit = async (e) => {
               </div>
             )}
           </section>
-          )}
-
-          {activeTab === "Users" && (
-            <section className="rounded-3xl border border-white/[0.1] bg-white/[0.035] p-8 shadow-2xl shadow-black/20 backdrop-blur-2xl">
-              <h2 className="text-2xl font-semibold">Users</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-400">User management needs a users API before registered users can be listed or edited.</p>
-            </section>
-          )}
-
-          {activeTab === "Analytics" && (
-            <section className="rounded-3xl border border-white/[0.1] bg-white/[0.035] p-8 shadow-2xl shadow-black/20 backdrop-blur-2xl">
-              <h2 className="text-2xl font-semibold">Analytics</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-400">Analytics require assessment-attempt and activity data from the backend.</p>
-            </section>
-          )}
-
-          {activeTab === "Settings" && (
-            <section className="rounded-3xl border border-white/[0.1] bg-white/[0.035] p-8 shadow-2xl shadow-black/20 backdrop-blur-2xl">
-              <h2 className="text-2xl font-semibold">Settings</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-400">Platform configuration controls can be added here.</p>
-            </section>
           )}
 
           <footer className="mt-7 text-center text-xs text-slate-600">
