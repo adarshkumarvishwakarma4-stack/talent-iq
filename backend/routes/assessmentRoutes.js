@@ -339,6 +339,14 @@ router.post("/attempt/:attemptId/submit-code", protectRoute, async (req, res) =>
       }
     }
 
+    // A compiler request can take time; reject the result if the assessment
+    // deadline passed while the candidate's code was being evaluated.
+    if (attempt.deadlineAt <= new Date()) {
+      attempt.status = "expired";
+      await attempt.save();
+      return res.status(410).json({ message: "Assessment time expired before this submission completed." });
+    }
+
     const totalTestCases = problem.testCases.length;
     const verdict = passedCount === totalTestCases ? "Accepted" : "Wrong Answer";
 
