@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 import Home from "./pages/Home";
 import Problems from "./pages/Problems";
 import Admin from "./pages/Admin";
-import VideoInterview from "./pages/VideoInterview";
 import Assessment from "./pages/Assessment";
 import AdminAssessments from "./pages/AdminAssessments";
 
@@ -155,7 +154,6 @@ function App() {
 
           {/* Individual problem details */}
           <Route path="/problems/:id" element={<Problems />} />
-          <Route path="/interview" element={<VideoInterview />} />
           <Route
             path="/assessment"
             element={
