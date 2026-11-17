@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 
-const API = "/api/assessments";
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+const API = `${API_BASE}/api/assessments`;
 
 function Assessment() {
   const { getToken, isLoaded, isSignedIn } = useAuth();
