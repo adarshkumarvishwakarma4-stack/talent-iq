@@ -10,7 +10,7 @@ export const configureSocket = (io) => {
         return next(new Error("Authentication required"));
       }
 
-      const payload = await verifyToken(token, process.env.CLERK_SECRET_KEY);
+      const payload = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY });
       const user = await User.findOne({ clerkId: payload.sub });
       if (!user) return next(new Error("User account not found"));
 
