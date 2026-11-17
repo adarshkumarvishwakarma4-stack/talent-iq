@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+
 const difficulties = ["All", "Easy", "Medium", "Hard"];
 
 const difficultyStyles = {
@@ -12,7 +14,7 @@ const difficultyStyles = {
 
 
 const executeCode = async (code, input = "") => {
-  const response = await fetch("http://localhost:3000/api/execute", {
+  const response = await fetch(`${API_BASE}/api/execute`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -64,7 +66,7 @@ function Problems() {
         setLoading(true);
         setError("");
 
-        const response = await fetch("http://localhost:3000/api/problems");
+        const response = await fetch(`${API_BASE}/api/problems`);
 
         if (!response.ok) {
           throw new Error(`Unable to load problems (${response.status})`);
@@ -113,7 +115,7 @@ function Problems() {
         setTestResults([]);
 
         const response = await fetch(
-          `http://localhost:3000/api/problems/${id}`,
+          `${API_BASE}/api/problems/${id}`,
           { signal: controller.signal }
         );
 
@@ -201,7 +203,7 @@ function Problems() {
     setTestResults([]);
 
     try {
-      const response = await fetch("http://localhost:3000/api/execute", {
+      const response = await fetch(`${API_BASE}/api/execute`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
