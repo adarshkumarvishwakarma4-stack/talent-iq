@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 
-const API = "/api/assessments";
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+const API = `${API_BASE}/api/assessments`;
 const inputClass = "w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none focus:border-violet-400/60";
 
 function AdminAssessments() {
@@ -38,7 +39,7 @@ function AdminAssessments() {
     setError("");
     try {
       const [problemData, assessmentData] = await Promise.all([
-        fetch("/api/problems").then(async (response) => {
+        fetch(`${API_BASE}/api/problems`).then(async (response) => {
           if (!response.ok) throw new Error("Could not load questions.");
           return response.json();
         }),
