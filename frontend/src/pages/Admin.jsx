@@ -2,6 +2,8 @@ import { useAuth } from "@clerk/clerk-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+
 
 function Admin() {
   const { getToken } = useAuth();
@@ -72,7 +74,7 @@ const handleSubmit = async (e) => {
   try {
     const token = await getToken();
 
-    const response = await fetch("/api/problems", {
+    const response = await fetch(`${API_BASE}/api/problems`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
