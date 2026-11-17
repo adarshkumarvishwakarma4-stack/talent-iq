@@ -10,6 +10,8 @@ import {
 } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+
 import Home from "./pages/Home";
 import Problems from "./pages/Problems";
 import Admin from "./pages/Admin";
@@ -44,7 +46,7 @@ function App() {
           throw new Error("Clerk token unavailable");
         }
 
-        const response = await fetch("http://localhost:3000/api/me", {
+        const response = await fetch(`${API_BASE}/api/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
