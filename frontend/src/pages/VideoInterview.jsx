@@ -20,6 +20,7 @@ function VideoInterview() {
   const localStreamRef = useRef(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
+  const remoteStreamRef = useRef(null);
   const roleRef = useRef("");
 
   useEffect(() => {
@@ -93,7 +94,7 @@ function VideoInterview() {
         audio: true,
       });
       localStreamRef.current = stream;
-      if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+      // The video elements render only after joined=true; attach streams in the effect below.
 
       const peer = new RTCPeerConnection({
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -102,8 +103,10 @@ function VideoInterview() {
       stream.getTracks().forEach((track) => peer.addTrack(track, stream));
 
       peer.ontrack = (event) => {
+        remoteStreamRef.current = event.streams[0];
         if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = event.streams[0];
+          remoteVideoRef.current.srcObject = remoteStreamRef.current;
+          remoteVideoRef.current.play?.().catch(() => {});
         }
         setCallStatus("Connected");
       };
@@ -199,6 +202,18 @@ function VideoInterview() {
     }
   };
 
+  useEffect(() => {
+    if (!joined) return;
+    if (localVideoRef.current && localStreamRef.current) {
+      localVideoRef.current.srcObject = localStreamRef.current;
+      localVideoRef.current.play?.().catch(() => {});
+    }
+    if (remoteVideoRef.current && remoteStreamRef.current) {
+      remoteVideoRef.current.srcObject = remoteStreamRef.current;
+      remoteVideoRef.current.play?.().catch(() => {});
+    }
+  }, [joined]);
+
   const endCall = () => {
     socketRef.current?.disconnect();
     socketRef.current = null;
@@ -208,6 +223,7 @@ function VideoInterview() {
     localStreamRef.current = null;
     if (localVideoRef.current) localVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+    remoteStreamRef.current = null;
     setJoined(false);
     setCallStatus("Call ended");
     setMicOn(true);
