@@ -17,6 +17,7 @@ import Problems from "./pages/Problems";
 import Admin from "./pages/Admin";
 import Assessment from "./pages/Assessment";
 import AdminAssessments from "./pages/AdminAssessments";
+import VideoInterview from "./pages/VideoInterview";
 
 function App() {
   const location = useLocation();
@@ -103,6 +104,12 @@ function App() {
           Problems
         </Link>
 
+        {isSignedIn && (
+          <Link to="/interview" className={navLinkClass("/interview")}>
+            Video Interview
+          </Link>
+        )}
+
         {isSignedIn && userRole !== "admin" && (
           <Link to="/assessment" className={navLinkClass("/assessment")}>
             Take Assessment
@@ -150,6 +157,7 @@ function App() {
       <main className="relative z-10">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/interview" element={<VideoInterview />} />
 
           {/* All problems list */}
           <Route path="/problems" element={<Problems />} />
