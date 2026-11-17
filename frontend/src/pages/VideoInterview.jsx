@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { io } from "socket.io-client";
 
-const API_URL = "http://localhost:3000";
+const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
 
 function VideoInterview() {
   const { getToken, isLoaded, isSignedIn } = useAuth();
@@ -29,7 +29,7 @@ function VideoInterview() {
     const loadRole = async () => {
       try {
         const token = await getToken();
-        const response = await fetch("/api/me", {
+        const response = await fetch(`${API_URL}/api/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error("Could not verify your account.");
@@ -53,7 +53,7 @@ function VideoInterview() {
     setLoading(true);
     try {
       const token = await getToken();
-      const response = await fetch("/api/interviews/rooms", {
+      const response = await fetch(`${API_URL}/api/interviews/rooms`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
